@@ -151,6 +151,24 @@ footer small { opacity:.65; letter-spacing:.15em; text-transform:uppercase; font
   visibility:hidden;
   pointer-events:none;
 }
+
+/* Envelope opening animation */
+.invite-gate.opening {
+  animation: envelopeReveal .95s cubic-bezier(.76,0,.24,1) forwards;
+  transform-origin: center center;
+}
+.invite-gate.opening .invite-cover-art {
+  animation: envelopeZoom 1s cubic-bezier(.76,0,.24,1) forwards;
+}
+@keyframes envelopeReveal {
+  0% { opacity:1; transform:scale(1); }
+  55% { opacity:1; transform:scale(1.025); }
+  100% { opacity:0; transform:scale(1.08); }
+}
+@keyframes envelopeZoom {
+  0% { transform:scale(1); }
+  100% { transform:scale(1.08); }
+}
 .invite-gate::after {
   content:"";
   position:absolute;
@@ -621,9 +639,12 @@ footer small { opacity:.65; letter-spacing:.15em; text-transform:uppercase; font
   const musicIcon = document.getElementById('music-toggle-icon');
 
   function openInvitation(){
-    if (!gate) return;
-    gate.classList.add('hidden');
-    document.body.classList.remove('locked');
+    if (!gate || gate.classList.contains('opening')) return;
+    gate.classList.add('opening');
+    setTimeout(function(){
+      gate.classList.add('hidden');
+      document.body.classList.remove('locked');
+    }, 900);
     if (audio) {
       audio.volume = 0.75;
       const playPromise = audio.play();
